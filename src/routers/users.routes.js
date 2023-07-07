@@ -3,51 +3,49 @@ const express = require('express');
 const router = express.Router();
 
 //Controller functions
-const {
-    signup, login
-} = require('./../controllers/auth.controller')
-const {
-    updateUser, deleteUser
-} = require('./../controllers/user.controller')
-const {
-    findAllOrders, findOneOrder
-} = require('./../controllers/orders.controller')
+const usersController = require('./../controllers/user.controller')
+const ordersController = require('./../controllers/orders.controller')
+const authController = require('./../controllers/auth.controller')
 
 //Middleware functions
-const {
-    validUser
-} = require('./../middlewares/users.middleware')
-const {
-    validOrder
-} = require('./../middlewares/orders.middleware')
-const {
-    protect, protectAccountOwner
-} = require('./../middlewares/auth.middleware')
-const {
-    createUserValidator, updateUserValidator
-} = require('./../middlewares/validations.middleware')
+const usersMiddleware = require('./../middlewares/users.middleware')
+const ordersMiddleware = require('./../middlewares/orders.middleware')
+const authMiddleware = require('./../middlewares/auth.middleware')
+const validations = require('./../middlewares/validations.middleware')
 
 router
-    .route('/signup')
-    .post(createUserValidator, updateUserValidator, signup)
+  .route('/signup')
+  .post(
+    validations.createUserValidator,
+    authController.signup
+  )
 
 router
-    .route('/login')
-    .post(login)
+  .route('/login')
+  .post(authController.login)
 
-router.use(protect)
-
-router
-    .route('/:id')
-    .patch(validUser, protectAccountOwner, updateUser)
-    .delete(validUser, protectAccountOwner, deleteUser)
+router.use(authMiddleware.protect)
 
 router
-    .route('/orders')
-    .get(findAllOrders)
+  .route('/:id')
+  .patch(
+    usersMiddleware.validUser, 
+    authMiddleware.protectAccountOwner, 
+    usersController.updateUser
+  )
+  .delete(
+    usersMiddleware.validUser, 
+    authMiddleware.protectAccountOwner, 
+    usersController.deleteUser
+  )
 
 router
-    .route('/orders/:id')
-    .get(validOrder, findOneOrder)
+  .route('/orders')
+  .get(ordersController.findAllOrders)
+
+router
+  .use('/orders/:id', ordersMiddleware.validOrder)
+  .route('/orders/:id')
+  .get(ordersController.findOneOrder)
 
 module.exports = router;

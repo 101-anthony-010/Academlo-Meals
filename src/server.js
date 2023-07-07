@@ -2,12 +2,15 @@ require("dotenv").config();
 
 const app = require('./app');
 const { db } = require('./database/config');
+const initModel = require("./models/initModel");
 
 const port = process.env.PORT;
 
 db.authenticate()
     .then(() => console.log("Database authenticated"))
     .catch((err) => console.log(err))
+
+initModel();
 
 db.sync()
     .then(() => console.log("Database synced"))

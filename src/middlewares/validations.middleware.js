@@ -55,7 +55,7 @@ exports.createRestaurantValidator = [
     .notEmpty()
     .withMessage('Rating is required')
     .isInt({ min: 1, max: 5 })
-    .withMessage('Rating must be between 1 and 5'),
+    .withMessage('Rating must be between 1 and 5!'),
   validateFields,
 ]
 
@@ -70,3 +70,71 @@ exports.updateRestaurantValidator = [
     .withMessage('Address must be between 5 and 100 characters'),
   validateFields,
 ]
+
+exports.createReviewValidation = [
+  body('comment')
+    .notEmpty()
+    .withMessage('Comment is required!'),
+  body('rating')
+    .notEmpty()
+    .withMessage('Rating is required!')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Rating must be between 1 and 5!'),
+  validateFields,
+];
+
+exports.updateReviewValidation = [
+  body('comment')
+    .notEmpty()
+    .withMessage('Comment is required!'),
+  body('rating')
+    .notEmpty()
+    .withMessage('Rating is required!')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Rating must be between 1 and 5!'),
+  validateFields,
+];
+
+exports.createMealValidation = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required!'),
+  body('price')
+    .notEmpty()
+    .withMessage('Price is required!'),
+  validateFields,
+];
+
+exports.updateMealValidation = [
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required!'),
+  body('price')
+    .notEmpty()
+    .withMessage('Price is required!'),
+  validateFields,
+];
+
+exports.createOrderValidation = [
+  body('mealId')
+    .notEmpty()
+    .withMessage('MealId is required!'),
+  body('quantity')
+    .notEmpty()
+    .withMessage('Quantity is required!'),
+  validateFields,
+];
+
+exports.loginValidation = [
+  body('email')
+    .notEmpty()
+    .withMessage('Email cannot be empty!')
+    .isEmail()
+    .withMessage('Must be a valid email!'),
+  body('password')
+    .notEmpty()
+    .withMessage('Password cannot be empty!')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 6 characters long!'),
+  validateFields,
+];

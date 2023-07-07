@@ -6,10 +6,10 @@ exports.validUser = catchAsync(async (req, res, next) => {
     const { id } = req.params
 
     const user = await User.findOne({
-        where: {
-            status: 'active',
-            id
-        }
+      where: {
+        status: 'active',
+        id
+      }
     })
 
     if (!user) 

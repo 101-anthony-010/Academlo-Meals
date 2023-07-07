@@ -1,5 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const Restaurant = require("../models/restaurant.model");
+const Review = require("../models/review.model");
+const User = require("../models/user.model");
 
 exports.createRestaurant = catchAsync(async (req, res, next) => {
     const { name, address, rating } = req.body
@@ -20,7 +22,19 @@ exports.findAllRestaurant = catchAsync(async (req, res, next) => {
     const restaurants = await Restaurant.findAll({
         where: {
             status: 'active',
-        }
+        },
+        include: [
+          {
+            model: Review,
+            attributes: ['comment', 'rating'],
+            include: [
+              {
+                model: User,
+                attributes: ['name', 'email'],
+              },
+            ],
+          },
+        ],
     })
 
     res.status(200).json({
@@ -39,18 +53,18 @@ exports.findOneRestaurant = catchAsync(async (req, res, next) => {
 });
 
 exports.updateRestaurant = catchAsync(async (req, res, next) => {
-    const { restaurant } = req
-    const { name, address } = req.body
+  const { restaurant } = req
+  const { name, address } = req.body
 
-    await restaurant.update({
-        name: name.toLowerCase(),
-        address: address.toLowerCase(),
-    })
+  await restaurant.update({
+    name: name.toLowerCase(),
+    address: address.toLowerCase(),
+  })
 
-    res.status(200).json({
-        status: 'updated',
-        restaurant
-    })
+  res.status(200).json({
+    status: 'updated',
+    restaurant
+  })
 });
 
 exports.deleteRestaurant = catchAsync(async (req, res, next) => {
@@ -60,6 +74,6 @@ exports.deleteRestaurant = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         status: 'deleted',
-        restaurant
+        message: "Restaurant has been deleted"
     })
 });

@@ -10,10 +10,13 @@ const sanitizer = require('perfect-express-sanitizer');
 const AppError = require('./utils/appError');
 
 //Controllers functions
+const globalErrorHandler = require('./controllers/error.controller');
 
 //Routes functions
 const usersRouter = require('./routers/users.routes');
 const restaurantsRouter = require('./routers/restaurants.routes');
+const mealsRouter = require('./routers/meals.routes');
+const ordersRouter = require('./routers/orders.routes');
 
 const app = express();
 const limiter = rateLimit({
@@ -42,11 +45,13 @@ app.use('/api/v1', limiter);
 //Routes 
 app.use('/api/v1/users', usersRouter)
 app.use('/api/v1/restaurants', restaurantsRouter)
+app.use('/api/v1/meals', mealsRouter)
+app.use('/api/v1/orders', ordersRouter)
 
 app.all('*', (req, res, next) => 
     next( new AppError(`Can't find ${req.originalUrl} on this server!`, 404)
 ))
 
-// app.use()
+app.use(globalErrorHandler)
 
 module.exports = app;
